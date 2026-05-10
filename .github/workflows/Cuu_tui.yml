@@ -17,11 +17,17 @@ jobs:
           
       - name: Sync TWRP Source
         run: |
+          mkdir ~/bin
+          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+          chmod a+x ~/bin/repo
+          export PATH=~/bin:$PATH
           mkdir ~/twrp
           cd ~/twrp
-          repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11
-          repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
-
+          git config --global user.name "huy731324-create"
+          git config --global user.email "huy731324@gmail.com"
+          ~/bin/repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11
+          ~/bin/repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+          
       - name: Clone Device Tree
         run: |
           cd ~/twrp
