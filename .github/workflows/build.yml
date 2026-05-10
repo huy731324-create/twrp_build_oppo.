@@ -38,12 +38,13 @@ jobs:
 
       - name: Clone Device Tree
         run: |
-          cd ~/twrp
-          rm -rf device/oppo/CPH1931
-          git clone https://github.com/minimal-manifest-twrp/android_device_oppo_CPH1931 -b twrp-11 device/oppo/CPH1931
-
-
-          
+          mkdir -p ~/twrp/device/oppo/CPH1931
+          cd ~/twrp/device/oppo/CPH1931
+          git init
+          git remote add origin https://github.com/skylot/android_device_oppo_CPH1931.git
+          git fetch --depth 1 origin twrp-11
+          git checkout FETCH_HEAD
+      
       - name: Build TWRP
         run: |
           cd ~/twrp
