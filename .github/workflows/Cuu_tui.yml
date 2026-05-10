@@ -33,8 +33,14 @@ jobs:
           cd ~/twrp
           rm -rf device/oppo/CPH1931
           mkdir -p device/oppo/CPH1931
-          git clone --depth=1 https://github.com/skylot/android_device_oppo_CPH1931 -b twrp-11 device/oppo/CPH1931 || \
-          git clone --depth=1 https://github.com/twrpdtfe/android_device_oppo_CPH1931 -b android-9.0 device/oppo/CPH1931
+          # Thử link 1
+          git clone --depth=1 https://github.com/skylot/android_device_oppo_CPH1931.git -b twrp-11 device/oppo/CPH1931 || \
+          # Nếu link 1 lỗi, dùng link 2 (Dự phòng)
+          git clone --depth=1 https://github.com/twrpdtfe/android_device_oppo_CPH1931.git -b android-9.0 device/oppo/CPH1931
+          
+      - name: Check Tree
+        run: ls -R ~/twrp/device/oppo/CPH1931
+
 
 
       - name: Build TWRP
