@@ -1,0 +1,43 @@
+name: Build TWRP cho Oppo A5 2020
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Dọn dẹp bộ nhớ máy chủ
+      uses: adelpro/cleanup-device@main
+
+    - name: Cài đặt môi trường Build
+      run: |
+        sudo apt update
+        sudo apt install gperf gcc-multilib g++-multilib lib32ncurses5-dev lib32readline-dev lib32z1-dev python3
+
+    - name: Tải mã nguồn TWRP
+      run: |
+        mkdir ~/twrp
+        cd ~/twrp
+        git config --global user.name "Cha Skibidi"
+        git config --global user.email "your-email@example.com"
+        repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11
+        repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+
+    - name: Clone Device Tree (CPH1931/1933)
+      run: |
+        cd ~/twrp
+        git clone https://github.com/S-S-S-S-S-S-S-S-S-S-S/android_device_oppo_CPH1931.git -b twrp-11 device/oppo/CPH1931
+
+    - name: Bắt đầu Build
+      run: |
+        cd ~/twrp
+        export ALLOW_MISSING_DEPENDENCIES=true
+        . build/envsetup.sh
+        lunch twrp_CPH1931-eng
+        make recoveryimage -j$(nproc --all)
+
+    - name: Tải file lên Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: TWRP-OppoA5-2020
+        path: ~/twrp/out/target/product/CPH1931/recovery.img
